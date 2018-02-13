@@ -39,7 +39,10 @@ class TVOperator(object):
                 subprocess.check_output(cmd, shell=True)
 
     def do_tv_off(self):
-        self.ir_send("tv", "POWER_OFF")
+        self.ir_send("tv", "POWER_OFF", 10)
+
+    def do_pvr_power(self):
+        self.ir_send("pvr", "POWER", 10)
 
     def do_pvr_off(self):
         if self.get_pvr_power():
@@ -65,8 +68,6 @@ class TVOperator(object):
         threads = [Operation(x) for x in operations]
         for t in threads:
             t.start()
-        for t in threads:
-            t.join()
 
     def watch_channel(self, channel):
         ops = [
@@ -107,7 +108,7 @@ class TVOperator(object):
         self.ir_send("bd", "POWER_ON")
 
     def do_tv_on(self):
-        self.ir_send("tv", "POWER_ON")
+        self.ir_send("tv", "POWER_ON", 10)
         time.sleep(30)
         self.ir_send("tv2", "HDMI_1")
 

@@ -9,12 +9,16 @@ import operations
 operator = operations.TVOperator(debug=False)
 app = Flask("tvcontrol")
 
-@app.route("/tvcontrol", methods=["POST"])
+@app.route("/tvcontrol", methods=["POST","GET"])
 def tvcontrol():
-    action = request.form['action']
-    channel = int(request.form['channel'])
+    myform = request.args if request.method == "GET" else request.form
+    action = myform['action']
+    print myform
+    if myform['key'] != "mhmlw":
+        raise Exception("Invalid key")
 
     if action == "watch_channel":
+        channel = int(myform['channel'])
         operator.watch_channel(channel)
     elif action == "watch_cbeebies":
         operator.watch_channel(124)
@@ -26,6 +30,10 @@ def tvcontrol():
         operator.all_off()
     elif action == "watch_fire":
         operator.watch_fire()
+    elif action == "pvr_power":
+        operator.do_pvr_power()
+    elif action == "pvr_on":
+        operator.do_pvr_on()
     return "OK\n"
     
 
